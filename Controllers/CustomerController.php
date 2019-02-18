@@ -4,17 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Budget;
 use App\Customer;
-use App\HotelPreference;
-use App\FlightPreference;
-use App\GroundTransportationPreference;
-use App\IndexPreference;
 use App\Inquiry;
-use App\InteractionPreference;
 use App\LoyaltyProgram;
 use App\Mail\CustomerInquiry;
 use App\Persona;
-use App\TravelProfile;
-use App\TravelPurpose;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -158,130 +151,6 @@ class CustomerController extends Controller
         } else {
             return redirect()->route('customer.enquiry', ['enquiry' => 'sent']);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Customer $customer
-     * @return \Illuminate\Http\Response
-     */
-    public function profile(Customer $customer)
-    {
-        if (empty($customer->persona->id)) {
-            return redirect()
-              ->route('customer.edit', ['id' => $customer->id])
-              ->with('error', 'Set Persona for customer first.');
-        }
-
-        $travelPurposes = [
-          'site_seeing' => '10',
-          'food' => '20',
-          'landscape_nature' => '30',
-          'festival_season' => '40',
-          'experience_local_culture' => '50',
-          'visiting_popular_attractions' => '60',
-        ];
-
-        $hotelPreferences = [
-          'food_preferences' => 'Local Food',
-          'food Notes' => 'No Beef',
-          'hotel_preferences' => '4 Star and Above',
-          'hotel_location_preference' => 'Near City Center',
-          'hotel_room_preference' => 'Non-smoking',
-          'hotel_floor_preference' => 'High Floor',
-          'hotel_brand' => 1,
-          'locality' => 0,
-          'within_budget' => 0,
-          'breakfast_inclusive' => 1,
-        ];
-
-        $interactionPreferences = [
-          'marketing' => 'Via Email',
-          'emergency' => 'Via Phone Call',
-          'time' => 'From 1pm to 2pm',
-          'allow_email' => 'Yes',
-          'allow_phone_call' => 'Yes',
-        ];
-
-        $indexPreferences = [
-          'air_pollution_index' => '49',
-          'safety_situation' => 'Very Safe',
-          'traffic_condition' => 'Moderate, heavy during rush hours',
-          'political_stability' => 'peaceful/stable',
-        ];
-
-        $groundTranspoPreferences = [
-          'type' => 'Van/SUV',
-          'service' => 'executive',
-          'company' => 'Great Travel East',
-          'account' => 'cash',
-        ];
-
-        $flightPreferences = [
-          'airline' => 'Singapore Airlines',
-          'private_charter' => 'Yes',
-          'class' => 'Business',
-          'seat' => 'Window',
-          'meal' => 'Vegetarian',
-          'special_request' => 'Allergic: Chicken',
-        ];
-
-
-        return view('customer.profile', [
-          'customer' => $customer,
-          'travelPurposes' => $travelPurposes,
-          'hotelPreferences' => $hotelPreferences,
-          'interactionPreferences' => $interactionPreferences,
-          'indexPreferences' => $indexPreferences,
-          'groundTranspoPreferences' => $groundTranspoPreferences,
-          'flightPreferences' => $flightPreferences,
-          'action' => 'CustomerController@update',
-          'destinations' => $this->destinations,
-          'attributes' => ['recency', 'frequency', 'monetary']
-        ]);
-    }
-
-    /**
-     * Show the form for editing profile resource.
-     *
-     * @param  \App\Customer $customer
-     * @return \Illuminate\Http\Response
-     */
-    public function profileUpdate(Customer $customer)
-    {
-        $budget = Budget::firstOrNew(['customer_id' => $customer->id]);
-        $hotelPreference = HotelPreference::firstOrNew(['customer_id' => $customer->id]);
-        $flightPreference = FlightPreference::firstOrNew(['customer_id' => $customer->id]);
-        $groundTransportationPreference = GroundTransportationPreference::firstOrNew(['customer_id' => $customer->id]);
-        $indexPreference = IndexPreference::firstOrNew(['customer_id' => $customer->id]);
-        $interactionPreference = InteractionPreference::firstOrNew(['customer_id' => $customer->id]);
-        $loyaltyProgram = LoyaltyProgram::firstOrNew(['customer_id' => $customer->id]);
-        $travelProfile = TravelProfile::firstOrNew(['customer_id' => $customer->id]);
-        $travelPurpose = TravelPurpose::firstOrNew(['customer_id' => $customer->id]);
-
-        return view('customer.profile.profile-edit', [
-          'budget' => $budget,
-          'customer' => $customer,
-          'hotelPreference' => $hotelPreference,
-          'flightPreference' => $flightPreference,
-          'groundTransportationPreference' => $groundTransportationPreference,
-          'indexPreference' => $indexPreference,
-          'interactionPreference' => $interactionPreference,
-          'loyaltyProgram' => $loyaltyProgram,
-          'travelProfile' => $travelProfile,
-          'travelPurpose' => $travelPurpose,
-          'attributes' => ['recency', 'frequency', 'monetary'],
-          'actionBudget' => 'BudgetController@store',
-          'actionHotelPreference' => 'HotelPreferenceController@store',
-          'actionFlightPreference' => 'FlightPreferenceController@store',
-          'actionGroundTransportationPreference' => 'GroundTransportationPreferenceController@store',
-          'actionIndexPreference' => 'IndexPreferenceController@store',
-          'actionInteractionPreference' => 'InteractionPreferenceController@store',
-          'actionLoyaltyProgram' => 'LoyaltyProgramController@store',
-          'actionTravelProfile' => 'TravelProfileController@store',
-          'actionTravelPurpose' => 'TravelPurposeController@store',
-        ]);
     }
 
     /**
